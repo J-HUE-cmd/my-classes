@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Database Systems II - دليل الدراسة الشامل</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg2: #111827;
+    --bg3: #1a2236;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --gold: #f59e0b;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: #1e3a5f;
+    --card: #141e30;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    direction: rtl;
+  }
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0a0e1a 0%, #1a1040 50%, #0a0e1a 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(0,212,255,0.15) 0%, transparent 70%);
+  }
+  header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--accent), #a78bfa, var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+  }
+  header p { color: var(--text-muted); margin-top: 0.5rem; font-size: 1rem; position: relative; }
+  .badge-row { display: flex; justify-content: center; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; position: relative; }
+  .badge {
+    background: rgba(0,212,255,0.1);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 0.3rem 1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  /* NAV TABS */
+  nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: var(--accent); background: rgba(0,212,255,0.05); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(0,212,255,0.08); }
+  /* CONTENT */
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .card-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.8rem;
+  }
+  .card-title span { font-size: 1.4rem; }
+  h3 { color: var(--gold); font-size: 1.1rem; margin: 1.2rem 0 0.6rem; }
+  h4 { color: var(--accent3); font-size: 1rem; margin: 1rem 0 0.4rem; }
+  p { line-height: 1.9; color: var(--text); margin-bottom: 0.6rem; font-size: 0.97rem; }
+  ul, ol { padding-right: 1.5rem; margin-bottom: 0.8rem; }
+  li { line-height: 1.9; color: var(--text); font-size: 0.95rem; margin-bottom: 0.2rem; }
+  /* BILINGUAL */
+  .bilingual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  @media(max-width:700px){ .bilingual { grid-template-columns: 1fr; } }
+  .lang-ar {
+    background: rgba(124,58,237,0.08);
+    border-right: 4px solid var(--accent2);
+    padding: 1rem;
+    border-radius: 8px;
+    direction: rtl;
+  }
+  .lang-en {
+    background: rgba(0,212,255,0.06);
+    border-right: 4px solid var(--accent);
+    padding: 1rem;
+    border-radius: 8px;
+    direction: ltr;
+    text-align: left;
+  }
+  .lang-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .lang-ar .lang-label { color: var(--accent2); }
+  .lang-en .lang-label { color: var(--accent); }
+  /* CODE */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+    direction: ltr;
+    text-align: left;
+  }
+  .code-block pre {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.88rem;
+    color: #e6edf3;
+    white-space: pre;
+  }
+  .kw { color: #ff7b72; }   /* keywords */
+  .fn { color: #d2a8ff; }   /* functions */
+  .str { color: #a5d6ff; }  /* strings */
+  .cm { color: #8b949e; font-style: italic; } /* comments */
+  .num { color: #79c0ff; }
+  .tbl { color: #ffa657; }  /* table names */
+  .col { color: #7ee787; }  /* column names */
+  /* CODE EXPLAIN */
+  .code-explain {
+    background: rgba(16,185,129,0.06);
+    border-right: 3px solid var(--accent3);
+    padding: 0.8rem 1rem;
+    margin: 0.5rem 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.9rem;
+    direction: rtl;
+  }
+  .line-num {
+    display: inline-block;
+    background: var(--accent3);
+    color: #000;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+  }
+  /* SUMMARY BOX */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(0,212,255,0.08), rgba(124,58,237,0.08));
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 1.2rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .summary-box h3 { color: var(--accent); margin-top: 0; }
+  /* IMPORTANT NOTE */
+  .note {
+    background: rgba(245,158,11,0.08);
+    border-right: 4px solid var(--gold);
+    padding: 0.8rem 1rem;
+    border-radius: 0 8px 8px 0;
+    margin: 0.8rem 0;
+    font-size: 0.92rem;
+  }
+  .note strong { color: var(--gold); }
+  /* QUIZ */
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.3s;
+  }
+  .question-card.correct { border-color: var(--accent3); }
+  .question-card.wrong { border-color: var(--danger); }
+  .question-num {
+    display: inline-block;
+    background: var(--accent2);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.7rem;
+    border-radius: 6px;
+    margin-bottom: 0.8rem;
+  }
+  .question-text { font-size: 1rem; font-weight: 600; margin-bottom: 1rem; line-height: 1.7; }
+  .options { display: flex; flex-direction: column; gap: 0.6rem; }
+  .option {
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.92rem;
+    text-align: right;
+    background: var(--bg3);
+    user-select: none;
+  }
+  .option:hover { border-color: var(--accent); background: rgba(0,212,255,0.07); }
+  .option.selected-correct { background: rgba(16,185,129,0.15); border-color: var(--accent3); color: var(--accent3); font-weight: 600; }
+  .option.selected-wrong { background: rgba(239,68,68,0.13); border-color: var(--danger); color: var(--danger); font-weight: 600; }
+  .option.reveal-correct { background: rgba(16,185,129,0.1); border-color: var(--accent3); }
+  .option.disabled { pointer-events: none; }
+  .feedback {
+    margin-top: 0.8rem;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct { background: rgba(16,185,129,0.1); color: var(--accent3); border: 1px solid var(--accent3); }
+  .feedback.wrong { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid var(--danger); }
+  /* QUIZ CONTROLS */
+  .quiz-controls { display: flex; gap: 1rem; margin: 1.5rem 0; flex-wrap: wrap; }
+  .btn {
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { filter: brightness(1.15); }
+  .btn-secondary { background: var(--bg3); border: 1px solid var(--border); color: var(--text); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .score-board {
+    display: none;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(16,185,129,0.1));
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .score-board.show { display: block; }
+  .score-num { font-size: 4rem; font-weight: 900; color: var(--accent); }
+  .score-label { color: var(--text-muted); font-size: 1rem; margin-top: 0.3rem; }
+  /* DEFINITION BOX */
+  .def-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .def-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+  .def-term { color: var(--gold); font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+  .def-ar { color: var(--accent2); font-size: 0.85rem; margin-bottom: 0.5rem; }
+  .def-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; }
+  /* STEPS */
+  .steps { counter-reset: step; }
+  .step {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 2rem; height: 2rem;
+    background: var(--accent2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.9rem;
+    color: #fff;
+  }
+  .step-content { flex: 1; }
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+  th { background: var(--bg3); color: var(--accent); padding: 0.7rem 1rem; border: 1px solid var(--border); text-align: right; }
+  td { padding: 0.6rem 1rem; border: 1px solid var(--border); line-height: 1.6; }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  /* AXIOM CARD */
+  .axiom-card {
+    background: var(--bg3);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.8rem;
+    border-right: 4px solid var(--accent2);
+  }
+  .axiom-name { color: var(--accent2); font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
+  .axiom-formula {
+    font-family: 'Fira Code', monospace;
+    background: #0d1117;
+    color: var(--accent3);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin: 0.4rem 0;
+    direction: ltr;
+  }
+  /* Progress */
+  .progress-bar-wrap { background: var(--bg3); border-radius: 999px; height: 6px; margin: 0.5rem 0 1.5rem; }
+  .progress-bar { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.4s; }
+  /* NF TABLE */
+  .nf-table td:first-child { color: var(--gold); font-weight: 700; }
+  /* tag */
+  .tag {
+    display: inline-block;
+    background: rgba(0,212,255,0.12);
+    color: var(--accent);
+    font-size: 0.78rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 600;
+    margin: 0.1rem;
+  }
+  .tag.purple { background: rgba(124,58,237,0.15); color: #a78bfa; }
+  .tag.green { background: rgba(16,185,129,0.12); color: var(--accent3); }
+  .tag.gold { background: rgba(245,158,11,0.12); color: var(--gold); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🗄️ Database Systems II — دليل الدراسة الشامل</h1>
+  <p>المرحلة الثالثة — علوم الحاسوب — جامعة النهرين | شرح كامل بالعربي والإنجليزي + أسئلة تدريبية</p>
+  <div class="badge-row">
+    <span class="badge">6 محاضرات</span>
+    <span class="badge">شرح مفصل</span>
+    <span class="badge">ترجمة كاملة</span>
+    <span class="badge">50 سؤال تدريبي</span>
+  </div>
+</header>
+
+<nav>
+  <button class="tab-btn active" onclick="showTab('l1')">📌 L1: Subquery</button>
+  <button class="tab-btn" onclick="showTab('l2')">📌 L2: DDL</button>
+  <button class="tab-btn" onclick="showTab('l3')">📌 L3: DB Design</button>
+  <button class="tab-btn" onclick="showTab('l4')">📌 L4: Func. Dependency</button>
+  <button class="tab-btn" onclick="showTab('l5')">📌 L5: Normalization</button>
+  <button class="tab-btn" onclick="showTab('l6')">📌 L6: Transactions</button>
+  <button class="tab-btn" onclick="showTab('quiz')">🎯 أسئلة تدريبية</button>
+</nav>
+
+<main>
+
+<!-- ========== LECTURE 1: SUBQUERY ========== -->
+<div id="l1" class="section active">
+  <div class="card">
+    <div class="card-title"><span>📚</span> المحاضرة الأولى: الاستعلامات المتداخلة (Subqueries)</div>
+
+    <div class="summary-box">
+      <h3>🔑 الملخص الشامل</h3>
+      <p>الـ Subquery هو استعلام SELECT داخل استعلام SELECT آخر. الاستعلام الخارجي يُسمى <strong>Outer Query</strong> والداخلي يُسمى <strong>Inner Query</strong>. يُستخدم في SELECT list، WHERE clause، وحتى مع DELETE وUPDATE.</p>
+    </div>
+
+    <h3>1️⃣ ما هي الـ Subquery؟</h3>
+    <div class="bilingual">
+      <div class="lang-ar">
+        <div class="lang-label">🇮🇶 العربية</div>
+        الـ Subquery هي استعلام SQL مُدمج داخل استعلام آخر. الاستعلام الخارجي (Outer Query) هو الاستعلام الرئيسي، والاستعلام الداخلي (Inner Query) هو الذي يكون بداخله بين قوسين. يمكن أن يحتوي الاستعلام الداخلي على WHERE و HAVING و GROUP BY.
+      </div>
+      <div class="lang-en">
+        <div class="lang-label">🇬🇧 ENGLISH</div>
+        A Subquery is a SELECT statement nested inside another SELECT statement. The main query is called the Outer Query, and the nested one is the Inner Query. It must be enclosed in parentheses and can contain WHERE, HAVING, and GROUP BY clauses.
+      </div>
+    </div>
+
+    <h3>2️⃣ Subquery في SELECT List</h3>
+    <p>يجب أن يُرجع الاستعلام الداخلي قيمة واحدة فقط (Scalar Subquery). مثال:</p>
+    <div class="code-block"><pre>
+<kw class="kw">SELECT</kw> <span class="col">Category</span>,
+       (<kw class="kw">SELECT</kw> <span class="fn">MAX</span>(<span class="col">DVDPrice</span>) <kw class="kw">FROM</kw> <span class="tbl">Films</span>
+        <kw class="kw">WHERE</kw> <span class="tbl">Films</span>.<span class="col">CategoryId</span> = <span class="tbl">Category</span>.<span class="col">CategoryId</span>),
+       <span class="col">CategoryId</span>
+<kw class="kw">FROM</kw> <span class="tbl">Category</span>;
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span> السطر 2-4: الاستعلام الداخلي يعمل لكل صف في جدول Category ويُرجع أعلى سعر DVD لتلك الفئة. هذا يُسمى Correlated Subquery لأنه مرتبط بالاستعلام الخارجي.
+    </div>
+
+    <h3>3️⃣ Subquery في WHERE Clause</h3>
+    <div class="code-block"><pre>
+<kw class="kw">SELECT</kw> <span class="col">Category</span>, <span class="col">FilmName</span>, <span class="col">DVDPrice</span>
+<kw class="kw">FROM</kw> <span class="tbl">Category</span> <kw class="kw">INNER JOIN</kw> <span class="tbl">Films</span>
+    <kw class="kw">ON</kw> <span class="tbl">Category</span>.<span class="col">CategoryId</span> = <span class="tbl">Films</span>.<span class="col">CategoryId</span>
+<kw class="kw">WHERE</kw> <span class="tbl">Films</span>.<span class="col">DVDPrice</span> =
+    (<kw class="kw">SELECT</kw> <span class="fn">MIN</span>(<span class="col">DVDPrice</span>) <kw class="kw">FROM</kw> <span class="tbl">Films</span>
+     <kw class="kw">WHERE</kw> <span class="tbl">Films</span>.<span class="col">CategoryId</span> = <span class="tbl">Category</span>.<span class="col">CategoryId</span>);
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span>
+      <strong>السطر 1:</strong> نختار اسم الفئة، اسم الفيلم، والسعر.<br>
+      <strong>السطر 2-3:</strong> ندمج جدول Category مع Films.<br>
+      <strong>السطر 4-6:</strong> الشرط: سعر الـ DVD يجب أن يساوي أدنى سعر لنفس الفئة — يُرجع أرخص DVD لكل فئة.
+    </div>
+
+    <h3>4️⃣ مشغلات الـ Subquery</h3>
+
+    <h4>🔹 IN Operator</h4>
+    <div class="code-block"><pre>
+<kw class="kw">SELECT</kw> <span class="col">FirstName</span>, <span class="col">LastName</span>, <span class="fn">YEAR</span>(<span class="col">DateOfBirth</span>)
+<kw class="kw">FROM</kw> <span class="tbl">MemberDetails</span>
+<kw class="kw">WHERE</kw> <span class="fn">YEAR</span>(<span class="col">DateOfBirth</span>) <kw class="kw">IN</kw>
+    (<kw class="kw">SELECT</kw> <span class="col">YearReleased</span> <kw class="kw">FROM</kw> <span class="tbl">Films</span>);
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span> يُرجع الأعضاء الذين وُلدوا في نفس سنة إصدار أي فيلم. الـ IN يتحقق إذا كانت القيمة موجودة في قائمة النتائج.
+    </div>
+
+    <h4>🔹 ANY / SOME Operator</h4>
+    <div class="code-block"><pre>
+<kw class="kw">SELECT</kw> <span class="col">FirstName</span>, <span class="col">LastName</span>
+<kw class="kw">FROM</kw> <span class="tbl">MemberDetails</span>
+<kw class="kw">WHERE</kw> <span class="col">DateOfJoining</span> < <kw class="kw">ANY</kw>
+    (<kw class="kw">SELECT</kw> <span class="col">MeetingDate</span> <kw class="kw">FROM</span> <span class="tbl">Attendance</span>);
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span> ANY تعني: الشرط يصح إذا تحقق مع أي قيمة واحدة على الأقل من نتائج الاستعلام الداخلي. (= ANY يساوي IN)
+    </div>
+
+    <h4>🔹 ALL Operator</h4>
+    <div class="code-block"><pre>
+<kw class="kw">SELECT</kw> <span class="col">MemberId</span>
+<kw class="kw">FROM</kw> <span class="tbl">MemberDetails</span>
+<kw class="kw">WHERE</kw> <span class="col">MemberId</span> < <kw class="kw">ALL</kw>
+    (<kw class="kw">SELECT</kw> <span class="col">FilmId</span> <kw class="kw">FROM</kw> <span class="tbl">Films</span> <kw class="kw">WHERE</kw> <span class="col">FilmId</span> > <span class="num">5</span>);
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span> ALL تعني: الشرط يجب أن يصح مع كل القيم. هنا: MemberId يجب أن يكون أصغر من كل الـ FilmIds التي قيمتها أكبر من 5.
+    </div>
+
+    <h4>🔹 EXISTS Operator</h4>
+    <div class="code-block"><pre>
+<kw class="kw">SELECT</kw> <span class="col">City</span>
+<kw class="kw">FROM</kw> <span class="tbl">Location</span>
+<kw class="kw">WHERE</kw> <kw class="kw">EXISTS</kw>
+    (<kw class="kw">SELECT</kw> * <kw class="kw">FROM</kw> <span class="tbl">MemberDetails</span>
+     <kw class="kw">WHERE</kw> <span class="col">MemberId</span> < <span class="num">5</span>);
+
+<span class="cm">-- عكسه بـ NOT EXISTS:</span>
+<kw class="kw">SELECT</kw> <span class="col">City</span> <kw class="kw">FROM</kw> <span class="tbl">Location</span>
+<kw class="kw">WHERE</kw> <kw class="kw">NOT EXISTS</kw>
+    (<kw class="kw">SELECT</kw> * <kw class="kw">FROM</kw> <span class="tbl">MemberDetails</span>
+     <kw class="kw">WHERE</kw> <span class="col">MemberId</span> > <span class="num">99</span>);
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span> EXISTS لا تقارن قيماً بل تتحقق فقط هل الاستعلام الداخلي أرجع صفوفاً أم لا. إذا أرجع أي صف → TRUE → يُنفذ الاستعلام الخارجي.
+    </div>
+
+    <div class="note">
+      <strong>⚠️ ملاحظة مهمة:</strong> يمكن استخدام Subquery مع DELETE وUPDATE في الـ WHERE clause.
+    </div>
+
+    <div class="summary-box">
+      <h3>📋 جدول المقارنة السريعة</h3>
+      <table>
+        <tr><th>المشغل</th><th>المعنى</th><th>متعدد الصفوف؟</th></tr>
+        <tr><td>= (scalar)</td><td>يساوي قيمة واحدة</td><td>❌ لا</td></tr>
+        <tr><td>IN</td><td>موجود في القائمة</td><td>✅ نعم</td></tr>
+        <tr><td>ANY / SOME</td><td>يصح مع أي قيمة</td><td>✅ نعم</td></tr>
+        <tr><td>ALL</td><td>يصح مع كل القيم</td><td>✅ نعم</td></tr>
+        <tr><td>EXISTS</td><td>هل يوجد صفوف؟</td><td>✅ نعم</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ========== LECTURE 2: DDL ========== -->
+<div id="l2" class="section">
+  <div class="card">
+    <div class="card-title"><span>🏗️</span> المحاضرة الثانية: لغة تعريف البيانات (DDL)</div>
+
+    <div class="summary-box">
+      <h3>🔑 الملخص الشامل</h3>
+      <p>DDL = Data Definition Language. تُستخدم لإنشاء وتعديل وحذف هياكل قاعدة البيانات (جداول، قيود، فهارس). الأوامر الرئيسية: CREATE، ALTER، DROP. القيود الرئيسية: NOT NULL، UNIQUE، CHECK، PRIMARY KEY، FOREIGN KEY.</p>
+    </div>
+
+    <h3>1️⃣ إنشاء وحذف قاعدة البيانات</h3>
+    <div class="code-block"><pre>
+<span class="cm">-- إنشاء قاعدة بيانات</span>
+<kw class="kw">CREATE DATABASE</kw> <span class="tbl">MyDatabase</span>;
+
+<span class="cm">-- حذف قاعدة بيانات</span>
+<kw class="kw">DROP DATABASE</kw> <span class="tbl">MyDatabase</span>;
+</pre></div>
+
+    <h3>2️⃣ أنواع البيانات (Data Types)</h3>
+    <div class="def-grid">
+      <div class="def-card">
+        <div class="def-term">CHAR(n)</div>
+        <div class="def-ar">نص بطول ثابت</div>
+        <div class="def-desc">Fixed-length string. Always uses exactly n characters, padded with spaces if shorter.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">VARCHAR(n)</div>
+        <div class="def-ar">نص بطول متغير</div>
+        <div class="def-desc">Variable-length string up to n characters. Saves space compared to CHAR.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">NUMBER / INT</div>
+        <div class="def-ar">أرقام</div>
+        <div class="def-desc">Stores integers or fixed/floating point numbers.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">DATE</div>
+        <div class="def-ar">تاريخ ووقت</div>
+        <div class="def-desc">Stores date and time information.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">AUTOINCREMENT</div>
+        <div class="def-ar">عداد تلقائي</div>
+        <div class="def-desc">Used as an integer counter that auto-increments with each new row.</div>
+      </div>
+    </div>
+
+    <h3>3️⃣ إنشاء الجداول (CREATE TABLE)</h3>
+    <div class="code-block"><pre>
+<kw class="kw">CREATE TABLE</kw> <span class="tbl">Train_Times</span>
+(
+    <span class="col">start_location</span>  <span class="fn">varchar</span>(<span class="num">75</span>),
+    <span class="col">destination</span>     <span class="fn">varchar</span>(<span class="num">75</span>),
+    <span class="col">departs</span>         <span class="fn">time</span>,
+    <span class="col">arrives</span>         <span class="fn">time</span>
+);
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span>
+      <strong>السطر 1:</strong> إنشاء جدول اسمه Train_Times.<br>
+      <strong>السطر 3-6:</strong> تعريف 4 أعمدة: موقع الانطلاق، الوجهة، وقت المغادرة، وقت الوصول.
+    </div>
+
+    <h3>4️⃣ تعديل الجداول (ALTER TABLE)</h3>
+    <div class="code-block"><pre>
+<span class="cm">-- إضافة عمود</span>
+<kw class="kw">ALTER TABLE</kw> <span class="tbl">MyTable</span>
+<kw class="kw">ADD</kw> <span class="col">new_column</span> <span class="fn">varchar</span>(<span class="num">50</span>);
+
+<span class="cm">-- حذف عمود</span>
+<kw class="kw">ALTER TABLE</kw> <span class="tbl">MyTable</span>
+<kw class="kw">DROP COLUMN</kw> <span class="col">old_column</span>;
+
+<span class="cm">-- تعديل نوع بيانات (SQL Server)</span>
+<kw class="kw">ALTER TABLE</kw> <span class="tbl">MyTable</span>
+<kw class="kw">ALTER COLUMN</kw> <span class="col">my_col</span> <span class="fn">int</span>;
+
+<span class="cm">-- في Oracle و MySQL تستخدم MODIFY</span>
+<kw class="kw">ALTER TABLE</kw> <span class="tbl">MyTable</span>
+<kw class="kw">MODIFY</kw> <span class="col">my_col</span> <span class="fn">int</span>;
+</pre></div>
+
+    <h3>5️⃣ القيود (Constraints)</h3>
+
+    <h4>🔸 NOT NULL</h4>
+    <div class="code-block"><pre>
+<kw class="kw">CREATE TABLE</kw> <span class="tbl">MyTable</span>
+(
+    <span class="col">Column1</span> <span class="fn">int</span> <kw class="kw">NOT NULL</kw>,      <span class="cm">-- يجب أن يكون له قيمة</span>
+    <span class="col">Column2</span> <span class="fn">varchar</span>(<span class="num">20</span>),         <span class="cm">-- يمكن أن يكون NULL</span>
+    <span class="col">Column3</span> <span class="fn">varchar</span>(<span class="num">12</span>) <kw class="kw">NOT NULL</kw>
+);
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span> NOT NULL يمنع إدخال قيم فارغة في العمود. Column2 يسمح بـ NULL (فارغ)، أما Column1 و Column3 فلا بد أن يكون لهما قيمة.
+    </div>
+
+    <h4>🔸 UNIQUE</h4>
+    <div class="code-block"><pre>
+<span class="cm">-- الطريقة 1: في تعريف العمود مباشرة</span>
+<kw class="kw">CREATE TABLE</kw> <span class="tbl">MyUniqueTable</span>
+(
+    <span class="col">Column1</span> <span class="fn">int</span>,
+    <span class="col">Column2</span> <span class="fn">varchar</span>(<span class="num">20</span>) <kw class="kw">UNIQUE</kw>,
+    <span class="col">Column3</span> <span class="fn">varchar</span>(<span class="num">12</span>) <kw class="kw">UNIQUE</kw>
+);
+
+<span class="cm">-- الطريقة 2: بإعطائها اسم (تسمح بـ UNIQUE على عمودين معاً)</span>
+<kw class="kw">CREATE TABLE</kw> <span class="tbl">AnotherTable</span>
+(
+    <span class="col">Column1</span> <span class="fn">int</span>,
+    <span class="col">Column2</span> <span class="fn">varchar</span>(<span class="num">20</span>),
+    <span class="col">Column3</span> <span class="fn">varchar</span>(<span class="num">12</span>),
+    <kw class="kw">CONSTRAINT</kw> <span class="col">MyUniqueConstraint</span> <kw class="kw">UNIQUE</kw>(<span class="col">Column2</span>, <span class="col">Column3</span>)
+);
+
+<span class="cm">-- إضافة بعد الإنشاء:</span>
+<kw class="kw">ALTER TABLE</kw> <span class="tbl">YetAnotherTable</span>
+<kw class="kw">ADD CONSTRAINT</kw> <span class="col">MyUniqueConstraint</span> <kw class="kw">UNIQUE</kw>(<span class="col">Column2</span>, <span class="col">Column3</span>);
+
+<span class="cm">-- حذف القيد:</span>
+<kw class="kw">ALTER TABLE</kw> <span class="tbl">YetAnotherTable</span>
+<kw class="kw">DROP CONSTRAINT</kw> <span class="col">MyUniqueConstraint</span>;
+
+<span class="cm">-- في MySQL:</span>
+<kw class="kw">ALTER TABLE</kw> <span class="tbl">YetAnotherTable</span>
+<kw class="kw">DROP INDEX</kw> <span class="col">MyUniqueConstraint</span>;
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span> UNIQUE يمنع تكرار القيم في عمود أو مجموعة أعمدة. ميزة إعطائها اسم: يمكن حذفها لاحقاً وتطبيقها على أكثر من عمود.
+    </div>
+
+    <h4>🔸 CHECK</h4>
+    <div class="code-block"><pre>
+<span class="cm">-- CHECK على عمود واحد:</span>
+<kw class="kw">CREATE TABLE</kw> <span class="tbl">NamesAges</span>
+(
+    <span class="col">Name</span> <span class="fn">varchar</span>(<span class="num">50</span>),
+    <span class="col">Age</span>  <span class="fn">int</span> <kw class="kw">CHECK</kw> (<span class="col">Age</span> >= <span class="num">0</span>)    <span class="cm">-- العمر لا يكون سالب</span>
+);
+
+<span class="cm">-- CHECK على عدة أعمدة:</span>
+<kw class="kw">CREATE TABLE</kw> <span class="tbl">Employee</span>
+(
+    <span class="col">Name</span> <span class="fn">varchar</span>(<span class="num">50</span>),
+    <span class="col">a</span>    <span class="fn">decimal</span>(<span class="num">12</span>,<span class="num">2</span>),
+    <span class="col">b</span>    <span class="fn">decimal</span>(<span class="num">12</span>,<span class="num">2</span>),
+    <kw class="kw">CONSTRAINT</kw> <span class="col">MyConstraint</span> <kw class="kw">CHECK</kw> (<span class="col">a</span> > <span class="col">b</span>)
+);
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span> CHECK يتحقق من شرط معين عند إدخال البيانات. إذا كان الشرط خاطئاً، لن يُدرج السجل.
+    </div>
+
+    <h4>🔸 PRIMARY KEY</h4>
+    <div class="code-block"><pre>
+<span class="cm">-- مفتاح أساسي من عمود واحد:</span>
+<kw class="kw">CREATE TABLE</kw> <span class="tbl">Books</span>
+(
+    <span class="col">BookId</span>   <span class="fn">int</span> <kw class="kw">PRIMARY KEY</kw>,
+    <span class="col">Year</span>     <span class="fn">int</span>,
+    <span class="col">BookName</span> <span class="fn">varchar</span>(<span class="num">50</span>)
+);
+
+<span class="cm">-- مفتاح أساسي من أكثر من عمود (Composite Key):</span>
+<kw class="kw">CREATE TABLE</kw> <span class="tbl">T1</span>
+(
+    <span class="col">Pk1</span>  <span class="fn">int</span>,
+    <span class="col">Pk2</span>  <span class="fn">int</span>,
+    <span class="col">name</span> <span class="fn">varchar</span>(<span class="num">50</span>),
+    <kw class="kw">CONSTRAINT</kw> <span class="col">pks</span> <kw class="kw">PRIMARY KEY</kw> (<span class="col">Pk1</span>, <span class="col">Pk2</span>)
+);
+
+<span class="cm">-- حذف Primary Key في MySQL:</span>
+<kw class="kw">ALTER TABLE</kw> <span class="tbl">MyTable</span>
+<kw class="kw">DROP PRIMARY KEY</kw>;
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span> PRIMARY KEY يعني أن هذا العمود (أو مجموعة أعمدة) يحدد كل سجل بشكل فريد. تلقائياً يطبق NOT NULL و UNIQUE.
+    </div>
+
+    <h4>🔸 FOREIGN KEY</h4>
+    <div class="code-block"><pre>
+<kw class="kw">ALTER TABLE</kw> <span class="tbl">Attendance</span>
+<kw class="kw">ADD CONSTRAINT</kw> <span class="col">locationid_fk</span>
+<kw class="kw">FOREIGN KEY</kw> (<span class="col">LocationId</span>)
+<kw class="kw">REFERENCES</kw> <span class="tbl">Location</span>(<span class="col">LocationId</span>);
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span>
+      <strong>السطر 1:</strong> نضيف القيد على جدول Attendance.<br>
+      <strong>السطر 2:</strong> نسمي القيد locationid_fk.<br>
+      <strong>السطر 3:</strong> العمود LocationId في Attendance هو المفتاح الأجنبي.<br>
+      <strong>السطر 4:</strong> يشير إلى عمود LocationId في جدول Location (المفتاح الأساسي هناك).
+    </div>
+
+    <h3>6️⃣ الفهارس (Indexes)</h3>
+    <div class="code-block"><pre>
+<span class="cm">-- إنشاء فهرس:</span>
+<kw class="kw">CREATE INDEX</kw> <span class="col">member_name_index</span>
+<kw class="kw">ON</kw> <span class="tbl">MemberDetails</span> (<span class="col">FirstName</span>, <span class="col">LastName</span>);
+
+<span class="cm">-- حذف الفهرس في SQL Server:</span>
+<kw class="kw">DROP INDEX</kw> <span class="tbl">MemberDetails</span>.<span class="col">member_name_index</span>;
+
+<span class="cm">-- في Oracle / IBM DB2:</span>
+<kw class="kw">DROP INDEX</kw> <span class="col">member_name_index</span>;
+
+<span class="cm">-- في MySQL:</span>
+<kw class="kw">ALTER TABLE</kw> <span class="tbl">MemberDetails</span>
+<kw class="kw">DROP INDEX</kw> <span class="col">member_name_index</span>;
+
+<span class="cm">-- في MS Access:</span>
+<kw class="kw">DROP INDEX</kw> <span class="col">member_name_index</span> <kw class="kw">ON</kw> <span class="tbl">MemberDetails</span>;
+</pre></div>
+    <div class="code-explain">
+      <span class="line-num">شرح</span> الـ Index مثل فهرس الكتاب — يجعل البحث أسرع بكثير. يتم إنشاؤه على الأعمدة التي يُبحث فيها كثيراً. كل DBMS له طريقة مختلفة قليلاً لحذفه.
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== LECTURE 3: DB DESIGN ========== -->
+<div id="l3" class="section">
+  <div class="card">
+    <div class="card-title"><span>🎨</span> المحاضرة الثالثة: تصميم قواعد البيانات (Database Design)</div>
+
+    <div class="summary-box">
+      <h3>🔑 الملخص الشامل</h3>
+      <p>تصميم قاعدة البيانات هو عملية تنظيم البيانات بشكل مناسب. يمر بمراحل: دراسة الجدوى ← تجميع المتطلبات ← التصميم والنمذجة ← التطبيق. أهداف التصميم: الكفاءة، النزاهة، الخصوصية، الأمن، القابلية للتطبيق، المرونة.</p>
+    </div>
+
+    <h3>1️⃣ مراحل تصميم قاعدة البيانات</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Feasibility Study — دراسة الجدوى</h4>
+          <p>تحديد الهدف من قاعدة البيانات بوضوح تام قبل البدء في أي شيء.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Requirement Collection & Analysis — جمع وتحليل المتطلبات</h4>
+          <p>تحديد البيانات المطلوبة وكيف ستُستخدم. مقابلة المستخدمين بشكل متكرر. مثال: هل للمريض أكثر من طبيب؟</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Prototyping & Design — النمذجة والتصميم</h4>
+          <p>ثلاث مراحل: التصميم المفاهيمي (Conceptual) ← المنطقي (Logical) ← الفيزيائي (Physical).</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Implementation — التطبيق</h4>
+          <p>تطوير كود معالجة قاعدة البيانات وتثبيت المحتوى الجديد.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>2️⃣ أهداف تصميم قاعدة البيانات</h3>
+    <div class="def-grid">
+      <div class="def-card">
+        <div class="def-term">Efficiency — الكفاءة</div>
+        <div class="def-desc">الأهم. استخدام الحجم الكامل للأجهزة والبرامج المتاحة. لا تأخير للمستخدم عند الوصول.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">Integrity — النزاهة</div>
+        <div class="def-desc">البيانات دقيقة وصحيحة. الحماية من الفساد سواء بالأخطاء البرمجية أو غيرها.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">Privacy — الخصوصية</div>
+        <div class="def-desc">لا وصول غير مصرح به. رصيد عميل لا يُكشف لعميل آخر.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">Security — الأمن</div>
+        <div class="def-desc">الحماية من الفساد الفيزيائي سواء من أعطال الأجهزة أو البرامج أو الوصول غير المصرح.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">Implementability — التطبيقية</div>
+        <div class="def-desc">النموذج المفاهيمي بسيط وفعال. تطبيقات تتفاعل بكفاءة مع قاعدة البيانات.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">Flexibility — المرونة</div>
+        <div class="def-desc">قاعدة البيانات تتكيف مع التغييرات المستقبلية في الأعمال. لا تصميم جامد.</div>
+      </div>
+    </div>
+
+    <h3>3️⃣ أدوات تصميم قواعد البيانات</h3>
+    <div class="bilingual">
+      <div class="lang-ar">
+        <div class="lang-label">🇮🇶 العربية</div>
+        <ul>
+          <li><strong>CASE Tools:</strong> برامج تدعم عملية تصميم النظام تلقائياً</li>
+          <li><strong>Database Drawing Tools:</strong> أدوات رسم للنمذجة المفاهيمية والمنطقية والفيزيائية</li>
+          <li>تُزيد الإنتاجية وتُقلل الأخطاء اليدوية</li>
+          <li>المزيد من الوقت للتفكير في التصميم الفعلي</li>
+        </ul>
+      </div>
+      <div class="lang-en">
+        <div class="lang-label">🇬🇧 ENGLISH</div>
+        <ul>
+          <li><strong>CASE Tools:</strong> Software providing automated support for system development</li>
+          <li><strong>Database Drawing Tools:</strong> Used in enterprise modeling and database design phases</li>
+          <li>Increase productivity, reduce manual errors</li>
+          <li>More time available for actual design thinking</li>
+        </ul>
+      </div>
+    </div>
+
+    <h4>مزايا وعيوب أدوات التصميم</h4>
+    <table>
+      <tr><th>المزايا ✅</th><th>العيوب ❌</th></tr>
+      <tr><td>تقليل كمية الكود المطلوب كتابته</td><td>تكلفة إضافية لشراء الأداة</td></tr>
+      <tr><td>تقليل الأخطاء الناتجة عن العمل اليدوي</td><td>المطورون يحتاجون تدريباً خاصاً</td></tr>
+      <tr><td>سهولة تحويل نموذج الأعمال لقاعدة بيانات عملية</td><td></td></tr>
+      <tr><td>جودة أعلى وإنتاج أكثر دقة</td><td></td></tr>
+    </table>
+
+    <h3>4️⃣ الزيادة والتكرار (Redundancy) وشذوذات البيانات</h3>
+    <div class="bilingual">
+      <div class="lang-ar">
+        <div class="lang-label">🇮🇶 العربية</div>
+        <p>التكرار يعني تخزين نفس المعلومة أكثر من مرة دون فائدة. يؤدي إلى ثلاثة أنواع من الشذوذات:</p>
+        <ul>
+          <li><strong>Insertion Anomaly:</strong> لا نستطيع إدخال قسم بدون موظف</li>
+          <li><strong>Update Anomaly:</strong> لو الموظف له عنوانان مختلفان في السجلات</li>
+          <li><strong>Deletion Anomaly:</strong> حذف آخر موظف في قسم يحذف القسم كله</li>
+        </ul>
+      </div>
+      <div class="lang-en">
+        <div class="lang-label">🇬🇧 ENGLISH</div>
+        <p>Redundancy = storing same data more than once. It causes three types of anomalies:</p>
+        <ul>
+          <li><strong>Insertion:</strong> Can't add a department without a staff member</li>
+          <li><strong>Update:</strong> Employee 519 has different addresses in different records</li>
+          <li><strong>Deletion:</strong> Deleting employee 100 removes all sales dept info</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>5️⃣ Repeating Group — المجموعة المتكررة</h3>
+    <div class="note">
+      <strong>تعريف:</strong> سمة يمكن أن تحتوي على أكثر من قيمة لنفس المفتاح الأساسي. مثلاً: موظف لديه أكثر من رقم هاتف.<br>
+      <strong>مهم:</strong> لا تُسمح Repeating Groups في التصميم العلائقي — كل خلية يجب أن تحتوي قيمة واحدة فقط (Atomic Values).
+    </div>
+  </div>
+</div>
+
+<!-- ========== LECTURE 4: FUNCTIONAL DEPENDENCY ========== -->
+<div id="l4" class="section">
+  <div class="card">
+    <div class="card-title"><span>🔗</span> المحاضرة الرابعة: الاعتمادية الوظيفية (Functional Dependency)</div>
+
+    <div class="summary-box">
+      <h3>🔑 الملخص الشامل</h3>
+      <p>الاعتمادية الوظيفية تصف العلاقة بين السمات: A → B تعني "A يُحدد B". أنواعها: كاملة، جزئية، انتقالية. قواعد أرمسترونج (Armstrong's Axioms) تُستخدم للاستنتاج: الانعكاسية، الزيادة، الانتقالية، الاتحاد، التحليل.</p>
+    </div>
+
+    <h3>1️⃣ مفهوم الاعتمادية الوظيفية</h3>
+    <div class="bilingual">
+      <div class="lang-ar">
+        <div class="lang-label">🇮🇶 العربية</div>
+        <p>A → B تعني: "A يُحدد B". أي إذا عرفنا قيمة A نستطيع معرفة قيمة B بشكل فريد.</p>
+        <ul>
+          <li>A يُسمى <strong>المُحدِّد (Determinant)</strong></li>
+          <li>B يُسمى <strong>المعتمد (Object/Dependent)</strong></li>
+          <li>مثال: StudentID → GPA (رقم الطالب يُحدد معدله)</li>
+          <li>مثال: Child → Mother (الطفل يُحدد أمه)</li>
+        </ul>
+      </div>
+      <div class="lang-en">
+        <div class="lang-label">🇬🇧 ENGLISH</div>
+        <p>A → B means: "A determines B". Knowing A gives us exactly one value of B.</p>
+        <ul>
+          <li>A is the <strong>Determinant</strong></li>
+          <li>B is the <strong>Dependent</strong></li>
+          <li>Example: StudentID → GPA</li>
+          <li>Trivial FD: A → B is trivial if B ⊆ A</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>2️⃣ أنواع الاعتمادية</h3>
+
+    <h4>📌 الاعتمادية الكاملة (Full Functional Dependency)</h4>
+    <div class="note">B يعتمد اعتماداً كاملاً على A إذا لم يكن يعتمد على أي جزء من A.<br>
+    <strong>مثال:</strong> {Roll No, Subject No} → Grade (الدرجة تعتمد على كليهما معاً، ليس أحدهما فقط)</div>
+
+    <h4>📌 الاعتمادية الجزئية (Partial Functional Dependency)</h4>
+    <div class="note">B يعتمد على جزء فقط من المفتاح المركب.<br>
+    <strong>مثال:</strong> Subject No → Hall Number (رقم القاعة يعتمد على المادة فقط، وليس رقم الطالب أيضاً)</div>
+
+    <h4>📌 الاعتمادية الانتقالية (Transitive Dependency)</h4>
+    <div class="note">A→B و B→C إذاً A→C (بشكل غير مباشر عبر B).<br>
+    <strong>مثال:</strong> Staff Number → Designation → Salary<br>
+    إذاً: Staff Number → Salary (انتقالية)</div>
+
+    <h4>📌 المُحدِّد المركب (Compound Determinant)</h4>
+    <div class="note">أكثر من سمة مطلوبة لتحديد سمة أخرى.<br>
+    <strong>مثال:</strong> {Internal Mark, External Mark} → Grade</div>
+
+    <h3>3️⃣ بديهيات أرمسترونج (Armstrong's Axioms)</h3>
+
+    <div class="axiom-card">
+      <div class="axiom-name">① الانعكاسية (Reflexivity)</div>
+      <div class="axiom-formula">إذا كان Y ⊆ X، إذاً X → Y</div>
+      <p>أي مجموعة سمات تُحدد أي جزء منها.</p>
+      <p><strong>مثال:</strong> {StudentID, StudentName} → StudentName</p>
+    </div>
+
+    <div class="axiom-card">
+      <div class="axiom-name">② الزيادة (Augmentation)</div>
+      <div class="axiom-formula">إذا X → Y، إذاً XZ → YZ</div>
+      <p>يمكن إضافة سمات إلى طرفي الاعتمادية. لكن لا يجوز إضافتها للطرف الأيمن فقط.</p>
+      <p><strong>أيضاً:</strong> إذا X → Y، إذاً XZ → Y</p>
+    </div>
+
+    <div class="axiom-card">
+      <div class="axiom-name">③ الانتقالية (Transitivity)</div>
+      <div class="axiom-formula">إذا X → Y و Y → Z، إذاً X → Z</div>
+      <p>مثل التوازي: إذا X موازٍ لـ Y وY موازٍ لـ Z، إذاً X موازٍ لـ Z.</p>
+    </div>
+
+    <div class="axiom-card">
+      <div class="axiom-name">④ شبه الانتقالية (Pseudotransitivity)</div>
+      <div class="axiom-formula">إذا X → Y و YW → Z، إذاً XW → Z</div>
+      <p>تعميم للانتقالية (الانتقالية حالة خاصة عندما W فارغة).</p>
+    </div>
+
+    <div class="axiom-card">
+      <div class="axiom-name">⑤ الاتحاد (Union)</div>
+      <div class="axiom-formula">إذا X → Y و X → Z، إذاً X → YZ</div>
+      <p>إذا كان نفس المحدد يُحدد سمتين مختلفتين، يمكن دمجهما.</p>
+      <p><strong>مثال:</strong> PINCODE → City و PINCODE → State، إذاً PINCODE → City, State</p>
+    </div>
+
+    <div class="axiom-card">
+      <div class="axiom-name">⑥ التحليل (Decomposition)</div>
+      <div class="axiom-formula">إذا X → YZ، إذاً X → Y و X → Z</div>
+      <p>عكس الاتحاد. يمكن تفكيك الطرف الأيمن.</p>
+      <p><strong>مثال:</strong> BookID → {Title, Author} إذاً BookID → Title و BookID → Author</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== LECTURE 5: NORMALIZATION ========== -->
+<div id="l5" class="section">
+  <div class="card">
+    <div class="card-title"><span>⚙️</span> المحاضرة الخامسة: التطبيع (Normalization)</div>
+
+    <div class="summary-box">
+      <h3>🔑 الملخص الشامل</h3>
+      <p>التطبيع هو عملية تنظيم الجداول للقضاء على التكرار وشذوذات البيانات. المراحل: UNF → 1NF → 2NF → 3NF → BCNF. في الغالب يكفي الوصول إلى 3NF.</p>
+    </div>
+
+    <h3>1️⃣ ما هو التطبيع؟</h3>
+    <div class="bilingual">
+      <div class="lang-ar">
+        <div class="lang-label">🇮🇶 العربية</div>
+        <p>التطبيع = إعادة تنظيم الجداول بحيث:</p>
+        <ul>
+          <li>كل حقيقة تُخزَّن مرة واحدة فقط (لا تكرار)</li>
+          <li>تجنب شذوذات الإدراج والحذف والتعديل</li>
+          <li>الحفاظ على تكامل البيانات</li>
+          <li>يعتمد على مفهوم الاعتمادية الوظيفية</li>
+        </ul>
+      </div>
+      <div class="lang-en">
+        <div class="lang-label">🇬🇧 ENGLISH</div>
+        <p>Normalization = organizing tables to:</p>
+        <ul>
+          <li>Store each fact only once (no redundancy)</li>
+          <li>Avoid insert/update/delete anomalies</li>
+          <li>Maintain data integrity</li>
+          <li>Based on Functional Dependency concepts</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>2️⃣ النماذج الطبيعية (Normal Forms)</h3>
+    <table class="nf-table">
+      <tr>
+        <th>النموذج</th>
+        <th>الشرط</th>
+        <th>ما يزيله</th>
+      </tr>
+      <tr>
+        <td>1NF</td>
+        <td>كل الأعمدة تحتوي قيماً ذرية (Atomic) — لا مجموعات متكررة</td>
+        <td>Repeating Groups</td>
+      </tr>
+      <tr>
+        <td>2NF</td>
+        <td>في 1NF + كل سمة غير مفتاحية تعتمد اعتماداً كاملاً على المفتاح الأساسي</td>
+        <td>Partial Dependencies</td>
+      </tr>
+      <tr>
+        <td>3NF</td>
+        <td>في 2NF + لا اعتمادية انتقالية</td>
+        <td>Transitive Dependencies</td>
+      </tr>
+      <tr>
+        <td>BCNF</td>
+        <td>في 3NF + كل مُحدِّد هو مفتاح مرشح (Candidate Key)</td>
+        <td>حالات استثنائية</td>
+      </tr>
+      <tr>
+        <td>5NF</td>
+        <td>اعتماديات معقدة غير شائعة</td>
+        <td>Join Dependencies</td>
+      </tr>
+    </table>
+    <div class="note"><strong>ملاحظة:</strong> 3NF يُعتبر كافياً في معظم التطبيقات العملية. ما بعده قد ينتج جداول كثيرة جداً وأداء أبطأ.</div>
+
+    <h3>3️⃣ من UNF إلى 1NF</h3>
+    <p>جدول DEPARTMENT فيه عمود Location يحتوي على أكثر من قيمة (Coimbatore, Chennai). هذا يخرق 1NF.</p>
+
+    <h4>الحلول الثلاثة:</h4>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>الحل 1: تقسيم العمود (Location1, Location2)</h4>
+          <p><strong>❌ العيب:</strong> إذا كان قسم في عشرة أماكن نحتاج 10 أعمدة! كثير من NULL في الأماكن التي فيها قسم واحد.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>الحل 2: إضافة صفوف جديدة لكل موقع</h4>
+          <p><strong>❌ العيب:</strong> تكرار كبير — نفس بيانات القسم تتكرر في كل صف.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>الحل 3 ✅ (الأفضل): تقسيم الجدول</h4>
+          <p>إنشاء جدولين: DEPARTMENT (DeptID, DeptName) و DEPT_LOCATION (DeptID, Location). هذا هو التطبيع الحقيقي!</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>4️⃣ من 1NF إلى 2NF</h3>
+    <p>مثال: جدول EMPLOYEE_PROJECT</p>
+    <div class="code-explain">
+      <span class="line-num">المشكلة</span>
+      المفتاح المركب: {E_ID, P_ID}<br>
+      • E_NAME يعتمد على E_ID فقط (اعتمادية جزئية ❌)<br>
+      • P_NAME يعتمد على P_ID فقط (اعتمادية جزئية ❌)<br>
+      • TOTAL_TIME يعتمد على {E_ID, P_ID} معاً (اعتمادية كاملة ✅)
+    </div>
+    <div class="code-explain">
+      <span class="line-num">الحل</span>
+      نُقسّم إلى 3 جداول:<br>
+      <strong>EMPLOYEE</strong>(E_ID, E_NAME) — E_ID → E_NAME<br>
+      <strong>PROJECT</strong>(P_ID, P_NAME) — P_ID → P_NAME<br>
+      <strong>HOURS_ASSIGNED</strong>(E_ID, P_ID, TOTAL_TIME) — {E_ID,P_ID} → TOTAL_TIME
+    </div>
+
+    <h3>5️⃣ من 2NF إلى 3NF</h3>
+    <p>مثال: جدول HOSTEL (Roll_No, Building_Name, Fee)</p>
+    <div class="code-explain">
+      <span class="line-num">المشكلة</span>
+      Roll_No → Building_Name (مباشر ✅)<br>
+      Building_Name → Fee (الرسوم تعتمد على المبنى)<br>
+      Roll_No → Fee (انتقالية ❌ — غير مباشرة عبر Building_Name)
+    </div>
+    <div class="code-explain">
+      <span class="line-num">الحل</span>
+      نُقسّم إلى جدولين:<br>
+      <strong>STUDENT_HOSTEL</strong>(Roll_No, Building_Name)<br>
+      <strong>BUILDING</strong>(Building_Name, Fee)<br>
+      الآن اختفت الاعتمادية الانتقالية!
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== LECTURE 6: TRANSACTIONS ========== -->
+<div id="l6" class="section">
+  <div class="card">
+    <div class="card-title"><span>⚡</span> المحاضرة السادسة: معالجة المعاملات (Transaction Processing)</div>
+
+    <div class="summary-box">
+      <h3>🔑 الملخص الشامل</h3>
+      <p>الـ Transaction هو مجموعة عمليات قراءة وكتابة تُنفَّذ كوحدة واحدة. يجب أن تتبع خصائص ACID: Atomicity, Consistency, Isolation, Durability. مشاكل التزامن: WR, RW, WW Conflicts. الحل: Lock-Based Concurrency Control.</p>
+    </div>
+
+    <h3>1️⃣ المصطلحات الأساسية</h3>
+    <div class="def-grid">
+      <div class="def-card">
+        <div class="def-term">Transaction (T)</div>
+        <div class="def-ar">المعاملة</div>
+        <div class="def-desc">مجموعة عمليات قراءة وكتابة تُنفذ كوحدة واحدة في قاعدة البيانات.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">Read — R(x)</div>
+        <div class="def-ar">قراءة كائن</div>
+        <div class="def-desc">قراءة قيمة الكائن x من قاعدة البيانات.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">Write — W(x)</div>
+        <div class="def-ar">كتابة كائن</div>
+        <div class="def-desc">تعديل وكتابة قيمة الكائن x في قاعدة البيانات.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">Commit</div>
+        <div class="def-ar">إتمام ناجح</div>
+        <div class="def-desc">إنهاء المعاملة بنجاح وتثبيت كل التغييرات.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">Abort</div>
+        <div class="def-ar">إلغاء</div>
+        <div class="def-desc">إنهاء المعاملة بفشل والتراجع عن كل التغييرات.</div>
+      </div>
+      <div class="def-card">
+        <div class="def-term">Partial Transaction</div>
+        <div class="def-ar">معاملة منقوصة</div>
+        <div class="def-desc">معاملة توقفت في المنتصف — تترك قاعدة البيانات بحالة غير متسقة.</div>
+      </div>
+    </div>
+
+    <h3>2️⃣ خصائص ACID</h3>
+
+    <div class="axiom-card">
+      <div class="axiom-name">A — Atomicity (الذرية)</div>
+      <p>إما تُنفَّذ المعاملة كاملة أو لا تُنفَّذ إطلاقاً. لا يوجد "نصف معاملة".</p>
+      <p>أسباب عدم الإتمام: إلغاء ذاتي، انقطاع كهرباء، موقف غير متوقع.</p>
+    </div>
+
+    <div class="axiom-card">
+      <div class="axiom-name">C — Consistency (الاتساق)</div>
+      <p>المستخدم مسؤول عن ضمان أن المعاملة تترك قاعدة البيانات في حالة متسقة.</p>
+      <p><strong>مثال:</strong> تحويل $100 من حساب A إلى B: يجب خصم نفس المبلغ وإضافته.</p>
+    </div>
+
+    <div class="axiom-card">
+      <div class="axiom-name">I — Isolation (العزل)</div>
+      <p>المعاملات المتزامنة يجب أن تكون معزولة — تنفيذ أحدها لا يؤثر على الأخرى.</p>
+      <p>يتحقق بخوارزميات الجدولة مثل Serial Scheduling.</p>
+    </div>
+
+    <div class="axiom-card">
+      <div class="axiom-name">D — Durability (الديمومة)</div>
+      <p>بعد الـ Commit، التغييرات دائمة ولا يمكن التراجع عنها حتى لو توقف النظام.</p>
+      <p>يُحقَّق بملفات السجل (Log Files) التي تُسجل كل عمليات الكتابة.</p>
+    </div>
+
+    <h3>3️⃣ Serial Scheduling والتنفيذ المتداخل</h3>
+    <div class="bilingual">
+      <div class="lang-ar">
+        <div class="lang-label">🇮🇶 العربية</div>
+        <p><strong>Serial Scheduling:</strong> تُنفَّذ المعاملات واحدة تلو الأخرى من البداية للنهاية.</p>
+        <p><strong>Interleaved Execution:</strong> تتناوب المعاملات في التنفيذ (تبديل بين T1 وT2 وهكذا). يزيد الكفاءة لكن قد يسبب شذوذات.</p>
+      </div>
+      <div class="lang-en">
+        <div class="lang-label">🇬🇧 ENGLISH</div>
+        <p><strong>Serial Scheduling:</strong> Transactions execute one after another completely.</p>
+        <p><strong>Interleaved Execution:</strong> Switching execution between transactions. Improves throughput but may cause conflicts.</p>
+      </div>
+    </div>
+
+    <h3>4️⃣ شذوذات التنفيذ المتداخل (Conflicts)</h3>
+
+    <h4>🔴 WR Conflict — Dirty Read (القراءة القذرة)</h4>
+    <div class="note">
+      <strong>التعريف:</strong> T2 يقرأ بيانات عدّلها T1 لكن T1 لم يُنهِ (لم يُنفَّذ Commit بعد).<br>
+      <strong>مثال:</strong> T1 يخصم $100 من حساب A → T2 يقرأ A ويضيف فائدة → T2 يُنهي → T1 يُكمل ويضيف $100 لـ B. النتيجة غير صحيحة.
+    </div>
+
+    <h4>🟠 RW Conflict — Unrepeatable Read (القراءة غير المتكررة)</h4>
+    <div class="note">
+      <strong>التعريف:</strong> T1 يقرأ A، ثم T2 يعدّل A ويُنهي، ثم T1 يقرأ A مجدداً فيجد قيمة مختلفة!<br>
+      <strong>مثال:</strong> T1 يتحقق رصيد A ($101) للسحب، T2 يسحب $100 → يبقى $1، T1 يحاول سحب $100 → اضطراب.
+    </div>
+
+    <h4>🟡 WW Conflict — Lost Update (التحديث الضائع)</h4>
+    <div class="note">
+      <strong>التعريف:</strong> T1 وT2 يحدثان نفس الكائن.<br>
+      <strong>مثال:</strong> T1 يُحدث A=3000، T2 يُحدث A=2000 و B=2000 ويُنهي، T1 يُحدث B=3000. النتيجة: A=2000 و B=3000 (غير متساويين، خرق القيد).
+    </div>
+
+    <h3>5️⃣ التحكم في التزامن بالأقفال (Lock-Based Concurrency Control)</h3>
+
+    <h4>الـ Lock أنواع:</h4>
+    <table>
+      <tr><th>النوع</th><th>الوصف</th><th>الشرط</th></tr>
+      <tr>
+        <td><span class="tag green">Shared Lock</span></td>
+        <td>قفل مشترك — للقراءة. أكثر من معاملة يمكنها الحصول عليه.</td>
+        <td>الكائن غير مقفل حصرياً</td>
+      </tr>
+      <tr>
+        <td><span class="tag">Exclusive Lock</span></td>
+        <td>قفل حصري — للكتابة. معاملة واحدة فقط تملكه.</td>
+        <td>لا أحد يملك قفلاً عليه</td>
+      </tr>
+    </table>
+
+    <h4>Strict Two-Phase Locking (Strict 2PL) — بروتوكول القفل ذو المرحلتين الصارم:</h4>
+    <div class="code-explain">
+      <span class="line-num">القاعدة 1</span> للقراءة: طلب Shared Lock. للكتابة: طلب Exclusive Lock.
+    </div>
+    <div class="code-explain">
+      <span class="line-num">القاعدة 2</span> تُحرَّر جميع الأقفال عند انتهاء المعاملة.
+    </div>
+
+    <h3>6️⃣ الإغلاق المميت (Deadlock)</h3>
+    <div class="bilingual">
+      <div class="lang-ar">
+        <div class="lang-label">🇮🇶 العربية</div>
+        <p>يحدث عندما تنتظر معاملتان أو أكثر بعضها البعض في حلقة مفرغة — لا أحد يُكمل.</p>
+        <p><strong>طرق التعافي:</strong></p>
+        <ul>
+          <li>الكشف من خلال متوسط وقت الانتظار</li>
+          <li>خوارزمية اكتشاف الـ Deadlock</li>
+          <li>إلغاء الكائنات من المعاملة الكبيرة</li>
+          <li>إعادة تشغيل المعاملات المقفولة</li>
+        </ul>
+      </div>
+      <div class="lang-en">
+        <div class="lang-label">🇬🇧 ENGLISH</div>
+        <p>Occurs when 2+ transactions wait for each other in a circular loop — neither can complete.</p>
+        <p><strong>Recovery methods:</strong></p>
+        <ul>
+          <li>Detection via average waiting time</li>
+          <li>Deadlock detection algorithm</li>
+          <li>Release objects from big transaction</li>
+          <li>Restart locked transactions</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ========== QUIZ ========== -->
+<div id="quiz" class="section">
+  <div class="card">
+    <div class="card-title"><span>🎯</span> أسئلة تدريبية — 50 سؤال (متوسطة–صعبة)</div>
+    <p style="color:var(--text-muted); margin-bottom:1rem;">اختر الإجابة الصحيحة. ستظهر النتيجة مباشرة بعد اختيارك.</p>
+
+    <div class="score-board" id="scoreboard">
+      <div class="score-num" id="scoreNum">0/50</div>
+      <div class="score-label">درجتك النهائية</div>
+      <button class="btn btn-secondary" style="margin-top:1rem" onclick="resetQuiz()">🔄 إعادة الاختبار</button>
+    </div>
+
+    <div class="quiz-controls">
+      <button class="btn btn-primary" onclick="showScore()">📊 عرض النتيجة</button>
+      <button class="btn btn-secondary" onclick="resetQuiz()">🔄 إعادة</button>
+    </div>
+
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const questions = [
+  // ===== LECTURE 1: SUBQUERY =====
+  {q:"ما الذي يُسمى Outer Query في الاستعلامات المتداخلة؟", opts:["الاستعلام الداخلي","الاستعلام الرئيسي (الخارجي)","الاستعلام في FROM","الاستعلام المحذوف"], ans:1, topic:"L1"},
+  {q:"أي شرط يجب توافره في Subquery الموجودة داخل SELECT list؟", opts:["يجب أن تُرجع صفوفاً متعددة","يجب أن تكون Scalar Subquery (قيمة واحدة)","يجب استخدام WHERE فيها","يجب استخدام GROUP BY"], ans:1, topic:"L1"},
+  {q:"ما الفرق بين = ANY و IN عند استخدامهما مع Subquery؟", opts:["ANY أسرع من IN","IN تُرجع NULL أما ANY لا","هما متطابقان في النتيجة عند استخدام =","ANY يعمل على جدول واحد فقط"], ans:2, topic:"L1"},
+  {q:"ماذا يفعل مشغّل ALL؟", opts:["يُرجع صحيح إذا تحقق الشرط مع أي قيمة واحدة","يُرجع صحيح إذا تحقق الشرط مع كل القيم","مطابق لـ EXISTS","يتحقق من وجود NULL"], ans:1, topic:"L1"},
+  {q:"أي مما يلي صحيح عن مشغّل EXISTS؟", opts:["يقارن قيمة عمود بأخرى","يتحقق فقط من وجود صفوف في نتيجة الاستعلام","يتطلب إرجاع عمود واحد","لا يعمل مع SELECT *"], ans:1, topic:"L1"},
+  {q:"ما النتيجة لو أرجع الاستعلام الداخلي أكثر من قيمة وربطناه بـ = (يساوي)؟", opts:["يُرجع أول قيمة فقط","يحدث خطأ","يُرجع NULL","يُنفذ بنجاح"], ans:1, topic:"L1"},
+  {q:"يمكن استخدام Subquery في WHERE clause مع أوامر:", opts:["SELECT فقط","SELECT و INSERT فقط","SELECT، UPDATE، و DELETE","SELECT و CREATE فقط"], ans:2, topic:"L1"},
+  {q:"مع أي أوامر الاستعلام يمكن استخدام NOT IN؟", opts:["WHERE فقط","SELECT list و WHERE","HAVING فقط","FROM فقط"], ans:1, topic:"L1"},
+  {q:"SOME هو مرادف لـ:", opts:["ALL","EXISTS","ANY","IN"], ans:2, topic:"L1"},
+  {q:"Correlated Subquery هو استعلام:", opts:["مستقل تماماً عن الاستعلام الخارجي","مرتبط بالاستعلام الخارجي ويُنفَّذ لكل صف","يُنفَّذ مرة واحدة فقط","يستخدم HAVING دائماً"], ans:1, topic:"L1"},
+
+  // ===== LECTURE 2: DDL =====
+  {q:"ما الأمر الصحيح لحذف عمود من جدول موجود؟", opts:["DELETE COLUMN col FROM tbl","ALTER TABLE tbl DROP COLUMN col","REMOVE COLUMN col FROM tbl","DROP COLUMN col FROM tbl"], ans:1, topic:"L2"},
+  {q:"ما الفرق بين CHAR(n) و VARCHAR(n)؟", opts:["CHAR أسرع دائماً","CHAR طول ثابت؛ VARCHAR طول متغير","VARCHAR يخزن فقط أرقاماً","لا فرق بينهما"], ans:1, topic:"L2"},
+  {q:"ما القيد الذي يمنع تكرار القيم في عمود؟", opts:["NOT NULL","CHECK","UNIQUE","PRIMARY KEY"], ans:2, topic:"L2"},
+  {q:"لتعديل نوع بيانات عمود في Oracle وMySQL يستخدم:", opts:["ALTER COLUMN","CHANGE COLUMN","MODIFY","UPDATE COLUMN"], ans:2, topic:"L2"},
+  {q:"ما الغرض من الفهرس (Index)؟", opts:["فرض القيود على البيانات","تسريع عمليات البحث والاسترجاع","منع التكرار","تشفير البيانات"], ans:1, topic:"L2"},
+  {q:"ما الأمر لحذف Index في MySQL؟", opts:["DROP INDEX indx","ALTER TABLE tbl DROP INDEX indx","REMOVE INDEX indx ON tbl","DELETE INDEX indx FROM tbl"], ans:1, topic:"L2"},
+  {q:"قيد CHECK يرفض السجل إذا:", opts:["كان الشرط صحيحاً","كان الشرط خاطئاً","كان العمود NULL","كانت القيمة مكررة"], ans:1, topic:"L2"},
+  {q:"لإنشاء مفتاح أساسي مركب من عمودين في جدول جديد:", opts:["نكتب PRIMARY KEY بجانب كل عمود","نستخدم CONSTRAINT في نهاية تعريفات الأعمدة","نستخدم ALTER TABLE بعد الإنشاء فقط","لا يمكن مفتاح أساسي مركب"], ans:1, topic:"L2"},
+  {q:"FOREIGN KEY يُشير إلى:", opts:["PRIMARY KEY في نفس الجدول","PRIMARY KEY في جدول آخر","أي عمود UNIQUE في جدول آخر","عمود NOT NULL في جدول آخر"], ans:1, topic:"L2"},
+  {q:"ما الصحيح عن NOT NULL Constraint؟", opts:["يمنع تكرار القيم","يفرض أن يكون للعمود قيمة دائماً","يمنع الأرقام السالبة","يُشفّر القيم"], ans:1, topic:"L2"},
+
+  // ===== LECTURE 3: DB DESIGN =====
+  {q:"ما أهم هدف في تصميم قواعد البيانات؟", opts:["الخصوصية","الأمن","الكفاءة","المرونة"], ans:2, topic:"L3"},
+  {q:"ما هي CASE Tools؟", opts:["أدوات رسومية للنمذجة فقط","برمجيات دعم آلي لجزء من عملية تطوير النظام","لغة برمجة قواعد بيانات","نوع من قواعد البيانات"], ans:1, topic:"L3"},
+  {q:"ما ميزة إعطاء اسم للـ UNIQUE Constraint؟", opts:["تُطبَّق أسرع","يمكن حذفها لاحقاً وتُطبَّق على أكثر من عمود","تُشفَّر تلقائياً","تُطبَّق على كل الجداول"], ans:1, topic:"L3"},
+  {q:"Insertion Anomaly تعني:", opts:["لا نستطيع حذف سجل دون فقد بيانات","لا نستطيع إدراج سجل دون بيانات غير ضرورية","القيم مكررة في عدة أماكن","التحديث يؤثر على سجل واحد فقط"], ans:1, topic:"L3"},
+  {q:"Repeating Group في قاعدة البيانات العلائقية:", opts:["مسموح في حالات خاصة","ضروري للمفاتيح الأجنبية","غير مسموح — يخرق 1NF","مطلوب في BCNF"], ans:2, topic:"L3"},
+  {q:"أي هذه ليست من مراحل تصميم قاعدة البيانات؟", opts:["Feasibility Study","Prototyping & Design","Implementation","Debugging"], ans:3, topic:"L3"},
+  {q:"مبدأ Flexibility في تصميم قواعد البيانات يعني:", opts:["قاعدة البيانات سريعة","قاعدة البيانات تتكيف مع التغييرات المستقبلية","قاعدة البيانات آمنة","قاعدة البيانات صغيرة الحجم"], ans:1, topic:"L3"},
+  {q:"Deletion Anomaly في المثال يعني:", opts:["حذف موظف يُغيّر عنوانه","حذف آخر موظف يحذف معلومات القسم كله","عدم قدرة إضافة قسم جديد","تكرار اسم الموظف"], ans:1, topic:"L3"},
+
+  // ===== LECTURE 4: FUNCTIONAL DEPENDENCY =====
+  {q:"في الاعتمادية A → B، أي من التالي صحيح؟", opts:["B هو المُحدِّد وA هو المعتمد","A هو المُحدِّد وB هو المعتمد","A وB متكافئان","لا يوجد مُحدِّد"], ans:1, topic:"L4"},
+  {q:"الاعتمادية AB هي Trivial إذا:", opts:["B ⊆ A","A ⊆ B","A = B","B لا يعتمد على A"], ans:0, topic:"L4"},
+  {q:"بديهية الاتحاد (Union) تقول:", opts:["إذا X→Y و Y→Z إذاً X→Z","إذا X→Y و X→Z إذاً X→YZ","إذا X→YZ إذاً X→Y و X→Z","إذا X→Y إذاً XZ→YZ"], ans:1, topic:"L4"},
+  {q:"بديهية التحليل (Decomposition) تقول:", opts:["إذا X→Y و Y→Z إذاً X→Z","إذا X→Y و X→Z إذاً X→YZ","إذا X→YZ إذاً X→Y و X→Z","إذا XY→Z إذاً X→Z"], ans:2, topic:"L4"},
+  {q:"الاعتمادية الانتقالية (Transitive) تعني:", opts:["A→B اعتماد مباشر","A→B→C ومن ثم A→C بشكل غير مباشر","A وB يحددان C","A يعتمد على B جزئياً"], ans:1, topic:"L4"},
+  {q:"مثال: Staff Number → Designation و Designation → Salary. هذا مثال على:", opts:["Partial Dependency","Full Dependency","Transitive Dependency","Trivial Dependency"], ans:2, topic:"L4"},
+  {q:"الاعتمادية الجزئية (Partial) تحدث عندما:", opts:["سمة تعتمد على المفتاح كاملاً","سمة تعتمد على جزء فقط من المفتاح المركب","مفتاحان يحددان سمة واحدة","لا يوجد مفتاح أساسي"], ans:1, topic:"L4"},
+  {q:"بديهية الزيادة (Augmentation): إذا X→Y إذاً:", opts:["XZ→Y","X→YZ","X→Y و X→Z","YZ→X"], ans:0, topic:"L4"},
+  {q:"Compound Determinant يعني:", opts:["مُحدِّد واحد يحدد سمات متعددة","أكثر من سمة مطلوبة لتحديد سمة أخرى","سمة تحدد نفسها","اعتمادية دورية"], ans:1, topic:"L4"},
+  {q:"بديهية الانعكاسية (Reflexivity) تقول:", opts:["إذا X→Y و Y→Z إذاً X→Z","إذا Y ⊆ X إذاً X→Y","إذا X→Y إذاً X→XY","X لا يمكن أن يحدد نفسه"], ans:1, topic:"L4"},
+
+  // ===== LECTURE 5: NORMALIZATION =====
+  {q:"جدول في 1NF يعني:", opts:["لا اعتمادية جزئية","كل القيم ذرية ولا مجموعات متكررة","لا اعتمادية انتقالية","كل محدد هو مفتاح مرشح"], ans:1, topic:"L5"},
+  {q:"ما الشرط الإضافي للانتقال من 1NF إلى 2NF؟", opts:["إزالة الاعتماديات الانتقالية","كل سمة غير مفتاحية تعتمد اعتماداً كاملاً على المفتاح الأساسي","كل محدد يجب أن يكون مفتاحاً مرشحاً","لا تكرار في البيانات"], ans:1, topic:"L5"},
+  {q:"ما الشرط الإضافي للانتقال من 2NF إلى 3NF؟", opts:["إزالة الاعتماديات الجزئية","إزالة الاعتماديات الانتقالية","كل عمود يجب أن يكون NOT NULL","لا استخدام لمفاتيح مركبة"], ans:1, topic:"L5"},
+  {q:"في مثال HOSTEL: Roll→Building و Building→Fee. ما المشكلة؟", opts:["اعتمادية جزئية","اعتمادية انتقالية","لا يوجد مفتاح أساسي","قيم غير ذرية"], ans:1, topic:"L5"},
+  {q:"BCNF يتطلب بالإضافة إلى 3NF:", opts:["لا تكرار إطلاقاً","كل محدد يجب أن يكون مفتاحاً مرشحاً (Candidate Key)","لا مفاتيح مركبة","كل الأعمدة NOT NULL"], ans:1, topic:"L5"},
+  {q:"لماذا لا يُستحسن التطبيع بعد 3NF في التطبيقات العملية؟", opts:["يكلّف كثيراً","ينتج جداول كثيرة جداً وأداء JOIN بطيء","لا يتوافق مع SQL","ينتج بيانات مكررة"], ans:1, topic:"L5"},
+  {q:"في مثال EMPLOYEE_PROJECT: E_NAME يعتمد على E_ID فقط (وليس المفتاح كاملاً). هذا:", opts:["Full Dependency","Partial Dependency","Transitive Dependency","Trivial Dependency"], ans:1, topic:"L5"},
+  {q:"الحل الأفضل لـ Repeating Group في UNF هو:", opts:["إضافة أعمدة جديدة (Location1, Location2)","إضافة صفوف جديدة لكل قيمة","تقسيم الجدول إلى جدولين","تجاهل المشكلة"], ans:2, topic:"L5"},
+
+  // ===== LECTURE 6: TRANSACTIONS =====
+  {q:"ما معنى Atomicity في ACID؟", opts:["البيانات دقيقة ومتسقة","إما تُنفَّذ المعاملة كاملة أو لا تُنفَّذ","التغييرات دائمة بعد Commit","المعاملات معزولة عن بعض"], ans:1, topic:"L6"},
+  {q:"من المسؤول عن ضمان Consistency في معاملة قاعدة البيانات؟", opts:["نظام DBMS","قاعدة البيانات تلقائياً","المستخدم الذي يُقدّم المعاملة","نظام التشغيل"], ans:2, topic:"L6"},
+  {q:"Dirty Read يحدث في تعارض:", opts:["WW Conflict","RW Conflict","WR Conflict","RR Conflict"], ans:2, topic:"L6"},
+  {q:"Unrepeatable Read يحدث في تعارض:", opts:["WW Conflict","RW Conflict","WR Conflict","RR Conflict"], ans:1, topic:"L6"},
+  {q:"ما الفرق بين Shared Lock وExclusive Lock؟", opts:["Shared للكتابة، Exclusive للقراءة","Shared للقراءة ويمكن مشاركته؛ Exclusive للكتابة وحصري","لا فرق بينهما","Shared يمنع الوصول تماماً"], ans:1, topic:"L6"},
+  {q:"Deadlock يحدث عندما:", opts:["معاملة تنتهي بفشل","معاملتان أو أكثر تنتظر بعضها في حلقة لا تنتهي","قاعدة البيانات تمتلئ","يُرفض طلب Lock"], ans:1, topic:"L6"},
+  {q:"في Strict 2PL، متى تُحرَّر الأقفال؟", opts:["بعد كل عملية قراءة","بعد كل عملية كتابة","عند انتهاء المعاملة كاملاً","عند بدء معاملة جديدة"], ans:2, topic:"L6"},
+  {q:"Durability تعني:", opts:["المعاملة تُنفَّذ بالكامل أو لا","التغييرات بعد Commit دائمة حتى لو تعطل النظام","المعاملات معزولة","البيانات دقيقة"], ans:1, topic:"L6"},
+];
+
+let answered = new Array(questions.length).fill(false);
+let correct = new Array(questions.length).fill(false);
+
+function buildQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'question-card';
+    div.id = 'q' + i;
+    const topicColors = {L1:'#00d4ff',L2:'#7c3aed',L3:'#10b981',L4:'#f59e0b',L5:'#ef4444',L6:'#ec4899'};
+    const topicNames = {L1:'Subquery',L2:'DDL',L3:'DB Design',L4:'Func. Dependency',L5:'Normalization',L6:'Transactions'};
+    div.innerHTML = `
+      <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap">
+        <span class="question-num">سؤال ${i + 1}</span>
+        <span class="tag" style="background:rgba(0,0,0,0.3);border:1px solid ${topicColors[q.topic]};color:${topicColors[q.topic]}">${topicNames[q.topic]}</span>
+      </div>
+      <div class="question-text">${q.q}</div>
+      <div class="options">
+        ${q.opts.map((o, j) => `
+          <div class="option" onclick="selectAnswer(${i}, ${j})" data-idx="${j}">
+            <span style="color:var(--text-muted);font-weight:700;margin-left:0.5rem">${['أ','ب','ج','د'][j]}.</span> ${o}
+          </div>
+        `).join('')}
+      </div>
+      <div class="feedback" id="fb${i}"></div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function selectAnswer(qi, oi) {
+  if (answered[qi]) return;
+  answered[qi] = true;
+  const q = questions[qi];
+  const card = document.getElementById('q' + qi);
+  const opts = card.querySelectorAll('.option');
+  const fb = document.getElementById('fb' + qi);
+
+  opts.forEach(o => o.classList.add('disabled'));
+
+  if (oi === q.ans) {
+    opts[oi].classList.add('selected-correct');
+    fb.textContent = '✅ إجابة صحيحة!';
+    fb.className = 'feedback correct show';
+    card.classList.add('correct');
+    correct[qi] = true;
+  } else {
+    opts[oi].classList.add('selected-wrong');
+    opts[q.ans].classList.add('reveal-correct');
+    fb.textContent = '❌ خطأ! الإجابة الصحيحة: ' + ['أ','ب','ج','د'][q.ans] + '. ' + q.opts[q.ans];
+    fb.className = 'feedback wrong show';
+    card.classList.add('wrong');
+  }
+}
+
+function showScore() {
+  const total = correct.filter(Boolean).length;
+  document.getElementById('scoreNum').textContent = total + '/' + questions.length;
+  const sb = document.getElementById('scoreboard');
+  sb.className = 'score-board show';
+  sb.scrollIntoView({behavior:'smooth'});
+}
+
+function resetQuiz() {
+  answered = new Array(questions.length).fill(false);
+  correct = new Array(questions.length).fill(false);
+  document.getElementById('scoreboard').className = 'score-board';
+  buildQuiz();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
